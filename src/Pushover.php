@@ -63,9 +63,13 @@ class Pushover
         return $this->handleRequest($request);
     }
 
+    /**
+     * Returns an array of requests to enable batching
+     * @param callable $batch
+     * @return array
+     */
     public function batch(Closure $batch)
     {
-        $this->requests = array();
         $this->config['batch'] = true;
 
         call_user_func($batch, $this);
