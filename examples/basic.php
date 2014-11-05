@@ -13,7 +13,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 //setup pushover client
 $pusher = new \Vdbf\Pushover\Pushover(array(
-    'token' =>
+    'token' => 'token'
 ));
 
 //compose a message for a recipient with as optional third parameter options like priority and notification sound
