@@ -3,10 +3,25 @@
 class Message
 {
 
+    const PRIORITY_LOWEST = -2;
+    const PRIORITY_LOW = -1;
+    const PRIORITY_NORMAL = 0;
+    const PRIORITY_HIGH = 1;
+    const PRIORITY_EMERGENCY = 2;
+
+    /**
+     * @var string
+     */
     protected $recipient;
 
+    /**
+     * @var string
+     */
     protected $text;
 
+    /**
+     * @var array
+     */
     protected $options;
 
     public function __construct($recipient, $text, $options = array())
