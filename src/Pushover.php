@@ -73,7 +73,7 @@ class Pushover
      */
     protected function handleRequest(RequestInterface $request)
     {
-        if(isset($this->config['batch']) && $this->config['batch']) {
+        if (isset($this->config['batch']) && $this->config['batch']) {
             return $request;
         }
         return $this->resolveRequestClient()->send($request);
@@ -89,6 +89,7 @@ class Pushover
     }
 
     /**
+     * Resolve the RequestClient instance via resolver or return already resolved instance
      * @return \GuzzleHttp\ClientInterface
      * @throws RequestClientException
      */
