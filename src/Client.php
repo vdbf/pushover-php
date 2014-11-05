@@ -16,31 +16,24 @@ class Client
     const BASE_URL = 'https://api.pushover.net/1/messages.json';
 
     /**
+     * @var ClientInterface
+     */
+    protected $client;
+
+    /**
      * @var array
      */
     private $requests = array();
 
     /**
-     * @var ClientInterface
-     */
-    static $requestClient;
-
-    /**
-     * @var Closure
-     */
-    static $requestClientResolver;
-
-    /**
      * Construct a new pushover instance
-     * @param $config
+     * @param array $config
      * @param ClientInterface $client
      */
-    public function __construct($config, ClientInterface $client = null)
+    public function __construct(array $config, ClientInterface $client = null)
     {
         $this->config = $config;
-        if (!is_null($client)) static::setRequestClientResolver(function () use ($client) {
-            return $client;
-        });
+        $this->client = $client;
     }
 
     /**
@@ -52,7 +45,7 @@ class Client
      */
     public function send(Message $message)
     {
-        $client = $this->resolveRequestClient();
+        $client = $this->getClient();
 
         $request = $client->createRequest(
             'POST',
@@ -116,34 +109,16 @@ class Client
         if (isset($this->config['batch']) && $this->config['batch']) {
             return $this->requests[] = $request;
         }
-        return $this->resolveRequestClient()->send($request);
+        return $this->getClient()->send($request);
     }
 
     /**
-     * Method to inject RequestClient dependency
-     * @param callable $resolver
-     */
-    public static function setRequestClientResolver(Closure $resolver)
-    {
-        static::$requestClientResolver = $resolver;
-    }
-
-    /**
-     * Resolve the RequestClient instance via resolver or return already resolved instance
+     * Retrieve the Request Client
      * @return \GuzzleHttp\ClientInterface
-     * @throws RequestClientException
      */
-    protected function resolveRequestClient()
+    protected function getClient()
     {
-        if (isset(static::$requestClient)) {
-            return static::$requestClient;
-        }
-
-        if (!isset(static::$requestClientResolver)) {
-            throw new RequestClientException();
-        }
-
-        return static::$requestClient = call_user_func(static::$requestClientResolver);
+        return $this->client;
     }
 
 }

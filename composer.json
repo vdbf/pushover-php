@@ -13,5 +13,10 @@
         "psr-4": {
             "Vdbf\\Pushover\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Vdbf\\Pushover\\Tests\\": "tests/"
+        }
     }
 }

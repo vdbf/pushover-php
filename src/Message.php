@@ -1,5 +1,7 @@
 <?php namespace Vdbf\Pushover;
 
+use InvalidArgumentException;
+
 class Message
 {
 
@@ -44,6 +46,7 @@ class Message
      */
     public function setOptions($options)
     {
+        $this->checkPropertyType('Options', $options, 'array');
         $this->options = $options;
     }
 
@@ -57,9 +60,11 @@ class Message
 
     /**
      * @param mixed $recipient
+     * @throws InvalidArgumentException
      */
     public function setRecipient($recipient)
     {
+        $this->checkPropertyType('Recipient', $recipient, 'string');
         $this->recipient = $recipient;
     }
 
@@ -76,7 +81,17 @@ class Message
      */
     public function setText($text)
     {
+        $this->checkPropertyType('Text', $text, 'string');
         $this->text = $text;
+    }
+
+    protected function checkPropertyType($property, $value, $type)
+    {
+        $checkFn = 'is_' . $type;
+
+        if (!$checkFn($value)) {
+            throw new InvalidArgumentException("{$property} should be of type {$type}");
+        }
     }
 
 } 
