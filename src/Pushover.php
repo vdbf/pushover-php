@@ -16,6 +16,11 @@ class Pushover
     const BASE_URL = 'https://api.pushover.net/1/messages.json';
 
     /**
+     * @var array
+     */
+    private $requests;
+
+    /**
      * @var ClientInterface
      */
     static $requestClient;
@@ -48,22 +53,53 @@ class Pushover
     public function send(Message $message)
     {
         $client = $this->resolveRequestClient();
-        $request = $client->createRequest('POST', $this->buildTokenUrl(), $message->getOptions());
+
+        $request = $client->createRequest(
+            'POST',
+            static::BASE_URL,
+            $this->buildRequestOptions($message)
+        );
+
         return $this->handleRequest($request);
     }
 
+    public function batch(Closure $batch)
+    {
+        $this->requests = array();
+        $this->config['batch'] = true;
+
+        call_user_func($batch, $this);
+
+        $requests = $this->requests;
+        $this->requests = array();
+
+        return $requests;
+    }
+
     /**
-     * Builds an URL with the supplied token
-     * @return string
+     * Builds request options
+     * @param Message $message
+     * @return array
      * @throws InvalidTokenException
      */
-    protected function buildTokenUrl()
+    protected function buildRequestOptions(Message $message)
     {
         if (!isset($this->config['token'])) {
             throw new InvalidTokenException();
         }
 
-        return static::BASE_URL . '?token=' . $this->config['token'];
+        $debug = isset($this->config['debug']) ? $this->config['debug'] : false;
+
+        $body = array_merge(
+            $message->getOptions(),
+            array(
+                'user' => $message->getRecipient(),
+                'message' => $message->getText(),
+                'token' => $this->config['token']
+            )
+        );
+
+        return compact('body', 'debug');
     }
 
     /**
@@ -74,7 +110,7 @@ class Pushover
     protected function handleRequest(RequestInterface $request)
     {
         if (isset($this->config['batch']) && $this->config['batch']) {
-            return $request;
+            return $this->requests[] = $request;
         }
         return $this->resolveRequestClient()->send($request);
     }
