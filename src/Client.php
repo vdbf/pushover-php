@@ -10,7 +10,7 @@ use Vdbf\Pushover\Exception\RequestClientException;
  * Class Pushover
  * @package Vdbf\Pushover
  */
-class Pushover
+class Client
 {
 
     const BASE_URL = 'https://api.pushover.net/1/messages.json';
@@ -18,7 +18,7 @@ class Pushover
     /**
      * @var array
      */
-    private $requests;
+    private $requests = array();
 
     /**
      * @var ClientInterface
