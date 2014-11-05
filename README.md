@@ -19,7 +19,3 @@ $message = new \Vdbf\Pushover\Message($argv[2], $argv[3]);
 $pusher->send($message);
 
 ```
-
-##TODO
-
-- write all tests
