@@ -3,6 +3,16 @@ pushover-php
 
 Pushover REST API implementation in PHP
 
+##Installation
+
+All you have to do is execute: `composer require vdbf/pushover-php 0.0.2`
+
+Alternatively, you can edit `composer.json` and add the following entry to the require section:
+
+```
+    'vdbf/pushover-php' : '0.0.2'
+```
+
 ##Example usage
 
 ```php
